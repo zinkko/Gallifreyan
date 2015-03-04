@@ -19,8 +19,10 @@ def apollonian_circle(c1,c2,c3, solution_type = 0):
     x2, y2, r2 = c2.params
     x3, y3, r3 = c3.params
     x,y,r = 0,0,0
-
     return (x,y,r)
+
+def inset_crop_angles():
+    pass
 
 def inset_radius(start_angle, end_angle, inset_angle):
     span = abs(end_angle - start_angle)

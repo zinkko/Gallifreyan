@@ -16,7 +16,7 @@ class UI(Gtk.Window):
         self.canvas.connect("button-press-event", self.on_button_press)
         self.add(self.canvas)
         
-        self.set_title("Gallifreyan Code")
+        self.set_title("Gallifreyan")
         self.resize(600,500)
         self.set_position(Gtk.WindowPosition.CENTER)
         self.connect('delete-event', Gtk.main_quit)
