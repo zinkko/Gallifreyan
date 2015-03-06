@@ -29,9 +29,6 @@ class CirclePlusPlus(object):
             self.remove_segment(*child.crop_angles)
 
     def remove_segment(self, begin, end):
-        epsilon = 0.001
-        begin %= 2*pi + epsilon
-        end %= 2*pi + epsilon
         if (begin > end):
             self.remove_segment(begin, 2*pi)
             self.remove_segment(0, end)

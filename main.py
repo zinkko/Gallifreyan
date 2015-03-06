@@ -10,11 +10,20 @@ test_shape1 = CirclePlusPlus(0.12,-0.32,0.40)
 
 step = pi/6
 
-#test_shape1.make_inset(0, step)
+test_shape1.make_inset(0, step)
 test_shape1.make_inset(4*step,5*step)
-#test_shape1.add_child(Circle(-0.8, 0, 0.2), True)
-#test_shape1.add_child(0.2, 5*pi/4, 1.1)
+test_shape1.add_child(Circle(0, 0.8, 0.2), True)
+test_shape1.add_child(Circle(-0.8, -0.7, 0.2),False)
 
+circle_test = CirclePlusPlus(-0.25, 0.32, 0.30)
+
+circle_test.add_child(Circle(0.6, 0.8, 0.2))
+circle_test.add_child(Circle(-0.6, 0.8, 0.2))
+circle_test.add_child(Circle(0.8, -0.6, 0.2))
+circle_test.add_child(Circle(-0.8, -0.6, 0.2))
+circle_test.add_child(Circle(0, 1, 0.2))
+circle_test.add_child(Circle(1, 0, 0.2))
+circle_test.add_child(Circle(-1, 0, 0.2))
 
 
 #ins = Inset(step, 2*step)
@@ -26,7 +35,7 @@ test_shape1.make_inset(4*step,5*step)
 #scnd.children.append(test_shape2)
 #test_shape2.children.append(scnd)
 
-shapes = [test_shape1]#, test_shape2, test_shape3]
+shapes = [test_shape1, circle_test]#, test_shape2, test_shape3]
 
 painter = Painter(shapes)
 
