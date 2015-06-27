@@ -1,4 +1,4 @@
-from math import hypot, acos, atan, cos, sin, tan, pi
+from math import hypot, acos, atan, atan2, cos, sin, tan, pi
 RIGHT = pi/2.
 STRAIGHT = pi
 FULL = 2*pi
@@ -42,20 +42,11 @@ def circle_crop_angles((x,y,r)):
         return 0,0 # the circle is completely inside the parent circle
     if x**2 + y**2 > r**2 +2*r + 1:
         return 0,0 #the circle is completely outside the parent circle
-    if x==0:
-        if y<0:
-            gamma = -1*pi/2;
-        else:
-            gamma = pi/2
-    else:
-        gamma = atan(y/x)
-    if x<0:
-        gamma += pi
-    gamma -= pi # this should not be needed
     # something must be wrong with the conversion from logical coordinates to real coordinates
     # TODO: find out what
     
     beta = alpha(r, 1, hypot(x,y))
+    gamma = atan2(y,x) - pi 
     return gamma + beta, gamma - beta
 
 def alpha(a,b,c):

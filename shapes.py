@@ -51,11 +51,10 @@ class CirclePlusPlus(object):
         self.arcs = new_arcs
 
     def collide(self, t1, t2):
-        larger = t1
-        smaller = t2
-        if larger < smaller:
-            smaller = t1
-            larger = t2
+        if t1 < t2:
+            smaller, larger = t1, t2
+        else:
+            smaller, larger = t2, t1
         return smaller[1] > larger[0]
 
     #def add_overlapping_circle(self, radius, pos_angle, distance):
