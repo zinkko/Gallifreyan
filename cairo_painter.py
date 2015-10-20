@@ -11,7 +11,7 @@ class Painter(Gtk.Window):
         self.epsilon = 0.01
         self.pos = (0,0) # position of center in logical coordinates
         self.size = 1 # window_height/2 in logical coordinates
-        self.scale = lambda x, factor: tuple(map(lambda a:factor*a, x))
+        self.scale = lambda x, factor: tuple([factor*a for a in x])
         
     
     def paint(self, context, height):

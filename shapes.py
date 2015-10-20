@@ -11,7 +11,7 @@ class CirclePlusPlus(object):
         self.arcs = [(0, 2*pi)]
 
     def get_draw_params(self):
-        return map(lambda x: ('arc',) + self.params + x, self.arcs)
+        return [('arc',) + self.params + x for x in self.arcs]
 
     def main_arc(self, a1, a2, context):
         context.arc(self.x, self.y,  self.r, a1, a2)

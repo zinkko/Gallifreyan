@@ -60,7 +60,7 @@ class UI(Gtk.Window):
     def zoom(self, factor):
 
         if self.painter.size < 2**-16 and factor > 1:
-            print 'no more zooming in'
+            print('no more zooming in')
             return
 
         self.painter.size /= 1.*factor

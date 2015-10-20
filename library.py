@@ -37,7 +37,8 @@ def inset_params(start_angle, end_angle, inset_angle):
     x = x1 + x2; y = y1 + y2
     return (x,y,r)
 
-def circle_crop_angles((x,y,r)):
+def circle_crop_angles(circle):
+    (x,y,r) = circle
     if x**2 + y**2 < r**2 -2*r + 1:
         return 0,0 # the circle is completely inside the parent circle
     if x**2 + y**2 > r**2 +2*r + 1:
@@ -51,7 +52,7 @@ def circle_crop_angles((x,y,r)):
 
 def alpha(a,b,c):
     '''find angle opposite to side "a" in a triangle with sides a,b,c'''
-    a2,b2,c2 = map(lambda x:x*x, (a,b,c))
+    a2,b2,c2 = [x*x for x in (a,b,c)]
     cos_alpha = (a2-b2-c2)/(2*b*c)
     return acos(cos_alpha)
 
