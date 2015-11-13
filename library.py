@@ -50,10 +50,19 @@ def circle_crop_angles(circle):
     gamma = atan2(y,x) - pi 
     return gamma + beta, gamma - beta
 
+def polygon_crop_angles(polygon):
+    (x,y),r = polygon.pos, polygon.radius
+    if x**2 + y**2 < r**2 -2*r + 1:
+        return 0,0 # the polygon is completely inside the parent circle
+    if x**2 + y**2 > r**2 +2*r + 1:
+        return 0,0 #the polygon is completely outside the parent circle
+
+    # TODO implement
+    return 0,0
+
 def alpha(a,b,c):
     '''find angle opposite to side "a" in a triangle with sides a,b,c'''
     a2,b2,c2 = [x*x for x in (a,b,c)]
     cos_alpha = (a2-b2-c2)/(2*b*c)
     return acos(cos_alpha)
-
     

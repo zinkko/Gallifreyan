@@ -4,6 +4,12 @@ from shapes import *
 
 # ui = UserInterface(some_nice_painter)
 
+def inset_around(pos, inclination, step=9):
+    center = pos * (2 * pi/step)
+    half = pi/step
+    return Inset(center - half, center + half, inclination)
+
+
 test_shape1 = CirclePlusPlus(0.12,-0.32,0.40)
 test_shape2 = CirclePlusPlus(-0.20,0.52,0.40)
 test_shape3 = Polygon(0.8,0.8,7,0.12)
@@ -25,6 +31,23 @@ circle_test.add_child(Circle(0, 1, 0.2))
 circle_test.add_child(Circle(1, 0, 0.2))
 circle_test.add_child(Circle(-1, 0, 0.2))
 
+inset_test = CirclePlusPlus(0.57, 0.31, 0.20)
+
+
+big = inset_around(1, pi/1.1)
+
+inset_test.add_child(big)
+inset_test.add_child(inset_around(3, pi/3))
+inset_test.add_child(inset_around(5, pi/2))
+inset_test.add_child(inset_around(7, pi/3))
+#inset_test.add_child(inset_around(0, 9, pi/3))
+
+big.children.extend([
+    Polygon(0,0, 6, 0.2, pi/9),
+    Polygon(0.5, 0.5, 6, 0.15, pi/9),
+    Polygon(1,1, 6, 0.1, pi/9)
+])
+
 
 ins = Inset(step, 2*step)
 ins.children.append(Polygon(0,0, 6, 0.5, 3*step/2))
@@ -35,9 +58,10 @@ scnd = Inset(9.8*step, 10.8*step)
 scnd.children.append(test_shape2)
 test_shape2.add_child(scnd)
 
-shapes = [test_shape1, test_shape2, circle_test]
+shapes = [test_shape1, test_shape2, circle_test, inset_test]
 
 painter = Painter(shapes)
+
 
 ui = UI(painter)
 

@@ -57,15 +57,6 @@ class CirclePlusPlus(object):
             smaller, larger = t2, t1
         return smaller[1] > larger[0]
 
-    #def add_overlapping_circle(self, radius, pos_angle, distance):
-    #    x, y = point_at(0,0, distance, pos_angle) # relative coords
-    #    circle = Circle(x,y,radius, True)
-    #    angle = alpha(radius, 1, distance) # self.radius is 1 in the relative coords
-    #    circle.start_angle = pos_angle - angle
-    #    circle.end_angle = pos_angle + angle
-    #    self.children.append(circle)
-    #    return circle # should the caller want to use this circle
-
 class Inset(object):
     
     def __init__(self, start, end, inset = pi/3):
@@ -102,7 +93,7 @@ class Circle(object):
 
 class Polygon(object):
     
-    def __init__(self, x, y, n, size, alpha=pi/2):
+    def __init__(self, x, y, n, size, alpha=pi/2, overlap=False):
         if n<3:
             raise ValueError('n must be at least 3')
         self.x = x
@@ -111,9 +102,10 @@ class Polygon(object):
         self.n = n # number of sides
         self.radius = self.size = size
         self.alpha = alpha # orientation of the polygon
+        self.overlap = overlap
         self.points = self.init_points()
         self.children = []
-        
+        self.crop_angles = polygon_crop_angles(self)
     def init_points(self):
         points = []
         angle = self.alpha
