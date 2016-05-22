@@ -3,7 +3,7 @@ from library import *
 
 
 class CirclePlusPlus(object):
-    
+
     def __init__(self,x,y,r):
         self.pos = (x,y)
         self.params = (self.x, self.y, self.radius) = (x,y,r)
@@ -58,7 +58,7 @@ class CirclePlusPlus(object):
         return smaller[1] > larger[0]
 
 class Inset(object):
-    
+
     def __init__(self, start, end, inset = pi/3):
         x,y, self.radius = inset_params(start, end, inset)
         self.pos = (x,y)
@@ -79,20 +79,32 @@ class Inset(object):
 
 
 class Circle(object):
-    
+
     def __init__(self, x, y, r, overlap = False):
         self.params = (x,y,r)
         self.pos = (x,y)
-        self.overlap = overlap 
+        self.overlap = overlap
         self.radius = r
         self.children = []
         self.crop_angles = circle_crop_angles(self.params)
-    
+
     def get_draw_params(self):
         return [('circle',) + self.params]
 
+class Ring(object):
+
+    def __init__(self, x, y, r, arcs = [(0, 2*pi)]):
+        self.params = (x,y,r) #probably also magic
+        self.pos = (x,y) # magic
+        self.arcs = arcs
+        self.children = [] #magic, i guess
+        self.radius = r #magic
+
+    def get_draw_params(self):
+        return [('arc',) + self.params + arc for arc in self.arcs]
+
 class Polygon(object):
-    
+
     def __init__(self, x, y, n, size, alpha=pi/2, overlap=False):
         if n<3:
             raise ValueError('n must be at least 3')

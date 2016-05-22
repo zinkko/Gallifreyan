@@ -2,7 +2,7 @@ from gi.repository import Gtk, Gdk
 from math import pi
 
 class UI(Gtk.Window):
-    
+
     def __init__(self, painter):
         super(UI, self).__init__()
         self.setup()
@@ -12,25 +12,25 @@ class UI(Gtk.Window):
     def setup(self):
         self.canvas = Gtk.DrawingArea()
         self.canvas.connect("draw", self.on_draw)
-        self.canvas.set_events(Gdk.EventMask.BUTTON_PRESS_MASK)
+        self.canvas.set_events(Gdk.EventMask.BUTTON_PRESS_MASK | Gdk.EventMask.KEY_PRESS_MASK)
         self.canvas.connect("button-press-event", self.on_button_press)
         self.add(self.canvas)
-        
+
         self.set_title("Gallifreyan")
         self.resize(600,500)
         self.set_position(Gtk.WindowPosition.CENTER)
         self.connect('delete-event', Gtk.main_quit)
         self.show_all()
-        
+
     def on_draw(self, wid, context):
-      
+
         context.set_source_rgb(0.33, 0.02, 0.26)
         context.set_line_width(1.4)
         w,h = self.get_size()
         context.translate(w/2, h/2)
 
         context.scale(1,-1)
-        
+
         self.painter.paint(context, h)
 
     def on_button_press(self, wid, e):
@@ -56,7 +56,7 @@ class UI(Gtk.Window):
 
    # def on_draw(self, wid, ctx):
    #     self.painter.on_draw(wid, ctx)
-    
+
     def zoom(self, factor):
 
         if self.painter.size < 2**-16 and factor > 1:
@@ -73,4 +73,3 @@ class UI(Gtk.Window):
         n, (o_x, o_y) = self.painter.size, self.painter.pos
         self.painter.pos = (o_x + n*x, o_y + n*y)
         self.canvas.queue_draw()
-
