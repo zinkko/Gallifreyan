@@ -1,5 +1,7 @@
 from gi.repository import Gtk, Gdk
 from math import pi
+from signal import signal
+from signal import SIGINT, SIG_DFL
 
 class UI(Gtk.Window):
 
@@ -14,6 +16,7 @@ class UI(Gtk.Window):
         self.canvas.connect("draw", self.on_draw)
         self.canvas.set_events(Gdk.EventMask.BUTTON_PRESS_MASK | Gdk.EventMask.KEY_PRESS_MASK)
         self.canvas.connect("button-press-event", self.on_button_press)
+        self.canvas.connect("key-press-event", self.on_key_press)
         self.add(self.canvas)
 
         self.set_title("Gallifreyan")
@@ -36,26 +39,22 @@ class UI(Gtk.Window):
     def on_button_press(self, wid, e):
         self.translate(e.x,e.y)
 
-        #<tmp>
         if e.type == Gdk.EventType.BUTTON_PRESS \
           and e.button == 1:
 
             self.zoom(2)
         if e.type == Gdk.EventType.BUTTON_PRESS \
           and e.button == 3:
-            
+
             self.zoom(0.5)
-            
-        #</tmp>'''
+
+    def on_key_press(self, widget, event):
+        keyname = Gdk.keyval_name(event.keyval)
+        print(keyname)
 
     def start(self):
-        from signal import signal
-        from signal import SIGINT, SIG_DFL
         signal(SIGINT, SIG_DFL)
         Gtk.main()
-
-   # def on_draw(self, wid, ctx):
-   #     self.painter.on_draw(wid, ctx)
 
     def zoom(self, factor):
 

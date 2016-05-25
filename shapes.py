@@ -1,13 +1,23 @@
 from math import pi
 from library import *
 
+class Shape(object):
 
-class CirclePlusPlus(object):
+    def __init__(self, x, y, r):
+        self.x = x
+        self.y = y
+        self.pos = x,y
+        self.radius = r
+        self.children = []
+        self.params = (x,y,r)
+
+    def get_draw_params(self):
+        return []
+
+class CirclePlusPlus(Shape):
 
     def __init__(self,x,y,r):
-        self.pos = (x,y)
-        self.params = (self.x, self.y, self.radius) = (x,y,r)
-        self.children = []
+        super(CirclePlusPlus, self).__init__(x,y,r)
         self.arcs = [(0, 2*pi)]
 
     def get_draw_params(self):
@@ -57,14 +67,13 @@ class CirclePlusPlus(object):
             smaller, larger = t2, t1
         return smaller[1] > larger[0]
 
-class Inset(object):
+class Inset(Shape):
 
     def __init__(self, start, end, inset = pi/3):
-        x,y, self.radius = inset_params(start, end, inset)
-        self.pos = (x,y)
+        super(Inset, self).__init__(*inset_params(start, end, inset))
         self.crop_angles = start, end
         a_s, a_e = end - inset + pi, start + inset - pi
-        self.params = (x, y, self.radius, a_s, a_e)
+        self.params = (self.x, self.y, self.radius, a_s, a_e)
         self.start_angle, self.end_angle = start, end
         self.inset = inset
         if end > start:
@@ -72,52 +81,44 @@ class Inset(object):
         else:
             self.opening = 2*pi - start + end
         self.overlap = True
-        self.children = []
 
     def get_draw_params(self):
         return [('arc',) + self.params]
 
 
-class Circle(object):
+class Circle(Shape):
 
     def __init__(self, x, y, r, overlap = False):
-        self.params = (x,y,r)
-        self.pos = (x,y)
+        super(Circle, self).__init__(x,y,r)
         self.overlap = overlap
-        self.radius = r
-        self.children = []
         self.crop_angles = circle_crop_angles(self.params)
 
     def get_draw_params(self):
         return [('circle',) + self.params]
 
-class Ring(object):
+class Ring(Shape):
 
     def __init__(self, x, y, r, arcs = [(0, 2*pi)]):
-        self.params = (x,y,r) #probably also magic
-        self.pos = (x,y) # magic
+        super(Ring, self).__init__(x,y,r)
         self.arcs = arcs
-        self.children = [] #magic, i guess
-        self.radius = r #magic
 
     def get_draw_params(self):
         return [('arc',) + self.params + arc for arc in self.arcs]
 
-class Polygon(object):
+class Polygon(Shape):
 
     def __init__(self, x, y, n, size, alpha=pi/2, overlap=False):
         if n<3:
             raise ValueError('n must be at least 3')
-        self.x = x
-        self.y = y
-        self.pos = (x,y)
+        super(Polygon, self).__init__(x,y,size)
         self.n = n # number of sides
-        self.radius = self.size = size
+        self.size = size
         self.alpha = alpha # orientation of the polygon
         self.overlap = overlap
         self.points = self.init_points()
         self.children = []
         self.crop_angles = polygon_crop_angles(self)
+
     def init_points(self):
         points = []
         angle = self.alpha
