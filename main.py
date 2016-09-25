@@ -1,4 +1,4 @@
-from ui import UI
+from ui.ui import UI
 from cairo_painter import Painter
 from shapes import *
 
