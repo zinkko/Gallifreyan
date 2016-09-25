@@ -107,25 +107,23 @@ class Ring(Shape):
 
 class Polygon(Shape):
 
-    def __init__(self, x, y, n, size, alpha=pi/2, overlap=False):
+    def __init__(self, x, y, n, r, alpha=pi/2, overlap=False):
         if n<3:
             raise ValueError('n must be at least 3')
-        super(Polygon, self).__init__(x,y,size)
+        super(Polygon, self).__init__(x,y,r)
         self.n = n # number of sides
-        self.size = size
         self.alpha = alpha # orientation of the polygon
         self.overlap = overlap
-        self.points = self.init_points()
         self.children = []
         self.crop_angles = polygon_crop_angles(self)
 
-    def init_points(self):
+    def get_points(self):
         points = []
         angle = self.alpha
         increment = 2*pi/self.n
         x,y = 0,0
         for i in range(self.n):
-            point = point_at(self.x, self.y, self.size, angle)
+            point = point_at(*self.params, angle)
             points.append(point)
             angle += increment
         return points
@@ -136,4 +134,4 @@ class Polygon(Shape):
         self.points = list_of_points
 
     def get_draw_params(self):
-        return [('polygon', self.points)]
+        return [('polygon', self.get_points())]

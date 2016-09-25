@@ -7,13 +7,20 @@ class Logic(object):
     def __init__(self, objects = None):
         self.objects = objects or []
         self.new_object = None
+        self.next_shape = 'circle'
 
     def clear_all(self):
         self.objects = []
 
+    def create_object(self, x, y):
+        xyz = {
+                'circle' : lambda x, y : Circle(x,y,0),
+                'polygon' : lambda x, y : Polygon(x, y, 6, 0),
+              }
+        return xyz[self.next_shape](x,y)
+
     def start_draw(self, x, y):
-        self.new_object = Circle(x, y, 0)
-        print("create circle", x, y)
+        self.new_object = self.create_object(x, y)
         self.objects.append(self.new_object)
 
     def notify_motion(self, x, y):
@@ -22,3 +29,6 @@ class Logic(object):
         ox, oy, _ = self.new_object.params
         self.new_object.r = hypot(abs(ox-x), abs(oy-y))
         self.new_object.params = (ox, oy, self.new_object.r)
+
+    def set_draw_shape(self, data):
+        self.next_shape = data
