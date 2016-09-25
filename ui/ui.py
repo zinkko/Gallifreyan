@@ -11,7 +11,8 @@ from .toolbar import ToolBar
 
 class UI(Gtk.Window):
 
-    def __init__(self, painter):
+    def __init__(self, painter, logic):
+        self.logic = logic
         super(UI, self).__init__()
         self.setup()
         self.painter = painter
@@ -31,7 +32,7 @@ class UI(Gtk.Window):
         self.set_events(Gdk.EventMask.KEY_PRESS_MASK)
         self.connect("key-press-event", self.on_key_press)
 
-        toolbar = ToolBar(self)
+        toolbar = ToolBar(self, self.logic)
         self.box.pack_start(toolbar, expand = False, fill = True, padding = 0)
 
         self.add(self.box)
@@ -53,7 +54,7 @@ class UI(Gtk.Window):
 
         context.scale(1,-1)
 
-        self.painter.paint(context, h)
+        self.painter.paint(context, h, self.logic.objects)
 
     def on_button_press(self, wid, e):
         pass

@@ -1,6 +1,7 @@
 from ui.ui import UI
 from cairo_painter import Painter
 from shapes import *
+from logic import Logic
 
 # ui = UserInterface(some_nice_painter)
 
@@ -68,9 +69,8 @@ ring.children.append(Circle(cos(b)*l, sin(b)*l, 0.05))
 # circle_test
 shapes = [test_shape1, test_shape2, inset_test, ring]
 
-painter = Painter(shapes)
+painter = Painter()
 
-
-ui = UI(painter)
+ui = UI(painter, Logic(shapes))
 
 ui.start()

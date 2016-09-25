@@ -3,27 +3,24 @@ from gi.repository import Gtk
 from math import pi
 
 class Painter(Gtk.Window):
-    
-    def __init__(self, objects):
-        #super(Painter,self).__init__()
-        #self.setup()
-        self.objects = objects
+
+    def __init__(self):
         self.epsilon = 0.01
         self.pos = (0,0) # position of center in logical coordinates
         self.size = 1 # window_height/2 in logical coordinates
         self.scale = lambda x, factor: tuple([factor*a for a in x])
-        
-    
-    def paint(self, context, height):
+
+
+    def paint(self, context, height, objects):
 
         # window mappings
         initial_factor = (height/2)/self.size
         x,y = self.pos
         context.translate(-x*initial_factor, -y*initial_factor)
 
-        for obj in self.objects:
-            self.recursive_draw(obj, context, initial_factor) 
-        
+        for obj in objects:
+            self.recursive_draw(obj, context, initial_factor)
+
 
     def recursive_draw(self, drawable, context, size_factor):
         new_factor = size_factor * drawable.radius
@@ -39,7 +36,7 @@ class Painter(Gtk.Window):
         context.restore()
 
     def draw(self, draw_objs, context, size_factor):
-        functions = {'circle':self.draw_circle, 
+        functions = {'circle':self.draw_circle,
           'arc':self.draw_arc,
           'polygon':self.draw_polygon}
         for parameters in draw_objs:
@@ -64,5 +61,3 @@ class Painter(Gtk.Window):
         context.move_to(*self.scale(points[-1], factor))
         context.line_to(*self.scale(points[0], factor))
         context.stroke()
-
-
