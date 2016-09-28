@@ -25,13 +25,13 @@ class ToolBar(Gtk.VBox):
     def create_radio_buttons(self):
         button = None
 
-        for shape in ["circle", "polygon"]:
+        for shape in ["select", "circle", "polygon"]:
             button = Gtk.RadioButton(group=button, label=shape)
             button.connect("toggled", self.change_shape, shape)
             self.pack_start(button, False, True, 0)
 
     def change_shape(self, widget, data):
-        self.logic.set_draw_shape(data)
+        self.ui.set_input_mode(data)
 
     def clear_all(self, widget, event):
         self.logic.clear_all()

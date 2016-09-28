@@ -16,7 +16,8 @@ class UI(Gtk.Window):
         super(UI, self).__init__()
         self.setup()
         self.painter = painter
-        #self.painter.scale_view(2)
+        self.input_mode = 'select'
+        self.selected = None
 
     def setup(self):
 
@@ -65,10 +66,21 @@ class UI(Gtk.Window):
 
         self.painter.paint(context, h, self.logic.objects)
 
+    def set_input_mode(self, mode):
+        self.input_mode = mode
+        if mode != 'select':
+            self.logic.set_draw_shape(mode)
+
     def on_button_press(self, widget, event):
         _, x, y, _ = event.window.get_pointer()
         x,y = self.map_coordinates(x,y)
-        self.logic.start_draw(x,y)
+        if self.input_mode == 'select':
+            self.painter.hilight(self.selected, (0,0,0))
+            self.selected = self.logic.get_shape_at(x, y)
+            self.painter.hilight(self.selected, (0,1,0))
+            self.queue_draw()
+        else:
+            self.logic.start_draw(x,y)
 
     def on_button_release(self, wid, event):
         pass
@@ -81,6 +93,8 @@ class UI(Gtk.Window):
             pass
 
     def on_drag(self, widget, event):
+        if self.input_mode == 'select':
+            return
         _, x, y, _ = event.window.get_pointer()
         x,y = self.map_coordinates(x,y)
         self.logic.notify_motion(x,y)

@@ -6,10 +6,13 @@ class Painter(Gtk.Window):
 
     def __init__(self):
         self.epsilon = 0.01
+        self.colors = {}
         self.pos = (0,0) # position of center in logical coordinates
         self.size = 1 # window_height/2 in logical coordinates
         self.scale = lambda x, factor: tuple([factor*a for a in x])
 
+    def hilight(self, shape, color):
+        self.colors[shape] = color
 
     def paint(self, context, height, objects):
 
@@ -19,6 +22,10 @@ class Painter(Gtk.Window):
         context.translate(-x*initial_factor, -y*initial_factor)
 
         for obj in objects:
+            if obj in self.colors:
+                context.set_source_rgb(*self.colors[obj])
+            else:
+                context.set_source_rgb(0,0,0)
             self.recursive_draw(obj, context, initial_factor)
 
 

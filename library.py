@@ -5,6 +5,11 @@ FULL = 2*pi
 
 # parameter 'circle' will expect a tuple (x,y,r)
 
+def distance_from_shape(shape, x, y):
+    '''distance from a point to the shapes center'''
+    sx, sy, _, = shape.params
+    return hypot(abs(sx-x), abs(sy-y))
+
 def vector(angle, length):
     ''' vector (x,y)'''
     return (cos(angle)*length, sin(angle)*length)
@@ -45,9 +50,9 @@ def circle_crop_angles(circle):
         return 0,0 #the circle is completely outside the parent circle
     # something must be wrong with the conversion from logical coordinates to real coordinates
     # TODO: find out what
-    
+
     beta = alpha(r, 1, hypot(x,y))
-    gamma = atan2(y,x) - pi 
+    gamma = atan2(y,x) - pi
     return gamma + beta, gamma - beta
 
 def polygon_crop_angles(polygon):
@@ -65,4 +70,3 @@ def alpha(a,b,c):
     a2,b2,c2 = [x*x for x in (a,b,c)]
     cos_alpha = (a2-b2-c2)/(2*b*c)
     return acos(cos_alpha)
-    

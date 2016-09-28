@@ -1,5 +1,5 @@
 from shapes import *
-
+from library import distance_from_shape
 from math import hypot
 
 class Logic(object):
@@ -12,6 +12,18 @@ class Logic(object):
 
     def clear_all(self):
         self.objects = []
+
+    def get_shape_at(self, x, y):
+        if not self.objects:
+            return None
+        closest = self.objects[0]
+        distance = distance_from_shape(closest, x, y)
+        for obj in self.objects:
+            new_distance = distance_from_shape(obj, x, y)
+            if new_distance < distance:
+                closest = obj
+                distance = new_distance
+        return closest
 
     def create_object(self, x, y):
         xyz = {
