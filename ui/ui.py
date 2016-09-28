@@ -74,7 +74,11 @@ class UI(Gtk.Window):
         pass
 
     def on_key_press(self, widget, event):
-        pass
+        keyname = Gdk.keyval_name(event.keyval)
+        try:
+            self.logic.set_n(int(keyname))
+        except ValueError:
+            pass
 
     def on_drag(self, widget, event):
         _, x, y, _ = event.window.get_pointer()

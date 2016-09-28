@@ -13,18 +13,19 @@ class ToolBar(Gtk.VBox):
 
         self.create_radio_buttons()
 
-        helloBtn = Gtk.Button("hello!")
+        saveBtn = Gtk.Button("Save")
+        loadBtn = Gtk.Button("Load from file")
         clearBtn = Gtk.Button("clear shapes")
 
         clearBtn.connect("button-press-event", self.clear_all)
 
-        for button in [helloBtn, clearBtn]:
+        for button in [saveBtn, loadBtn, clearBtn]:
             self.pack_start(button, expand = False, fill = True, padding = 0)
 
     def create_radio_buttons(self):
         button = None
 
-        for shape in ["circle", "arc", "inset", "polygon"]:
+        for shape in ["circle", "polygon"]:
             button = Gtk.RadioButton(group=button, label=shape)
             button.connect("toggled", self.change_shape, shape)
             self.pack_start(button, False, True, 0)

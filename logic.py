@@ -8,6 +8,7 @@ class Logic(object):
         self.objects = objects or []
         self.new_object = None
         self.next_shape = 'circle'
+        self.n = 6
 
     def clear_all(self):
         self.objects = []
@@ -15,9 +16,12 @@ class Logic(object):
     def create_object(self, x, y):
         xyz = {
                 'circle' : lambda x, y : Circle(x,y,0),
-                'polygon' : lambda x, y : Polygon(x, y, 6, 0),
+                'polygon' : lambda x, y : Polygon(x, y, self.n, 0),
               }
         return xyz[self.next_shape](x,y)
+
+    def set_n(self, n):
+        if n > 2: self.n = n
 
     def start_draw(self, x, y):
         self.new_object = self.create_object(x, y)
