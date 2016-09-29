@@ -1,5 +1,5 @@
 from ui.ui import UI
-from cairo_painter import Painter
+from ui.cairo_painter import Painter
 from shapes import *
 from logic import Logic
 

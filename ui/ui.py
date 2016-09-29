@@ -17,7 +17,6 @@ class UI(Gtk.Window):
         self.setup()
         self.painter = painter
         self.input_mode = 'select'
-        self.selected = None
 
     def setup(self):
 
@@ -75,9 +74,9 @@ class UI(Gtk.Window):
         _, x, y, _ = event.window.get_pointer()
         x,y = self.map_coordinates(x,y)
         if self.input_mode == 'select':
-            self.painter.hilight(self.selected, (0,0,0))
-            self.selected = self.logic.get_shape_at(x, y)
-            self.painter.hilight(self.selected, (0,1,0))
+            self.painter.hilight(self.logic.selected_object, None)
+            self.logic.select_shape_at(x, y)
+            self.painter.hilight(self.logic.selected_object, (0,1,0))
             self.queue_draw()
         else:
             self.logic.start_draw(x,y)

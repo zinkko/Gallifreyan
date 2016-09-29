@@ -73,7 +73,7 @@ class Inset(Shape):
         super(Inset, self).__init__(*inset_params(start, end, inset))
         self.crop_angles = start, end
         a_s, a_e = end - inset + pi, start + inset - pi
-        self.params = (self.x, self.y, self.radius, a_s, a_e)
+        self.angles = (a_s, a_e)
         self.start_angle, self.end_angle = start, end
         self.inset = inset
         if end > start:
@@ -83,7 +83,7 @@ class Inset(Shape):
         self.overlap = True
 
     def get_draw_params(self):
-        return [('arc',) + self.params]
+        return [('arc',) + self.params + self.angles]
 
 
 class Circle(Shape):

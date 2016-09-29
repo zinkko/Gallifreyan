@@ -12,7 +12,10 @@ class Painter(Gtk.Window):
         self.scale = lambda x, factor: tuple([factor*a for a in x])
 
     def hilight(self, shape, color):
-        self.colors[shape] = color
+        if shape in self.colors and color is None:
+            del self.colors[shape]
+        else:
+            self.colors[shape] = color
 
     def paint(self, context, height, objects):
 
@@ -22,21 +25,24 @@ class Painter(Gtk.Window):
         context.translate(-x*initial_factor, -y*initial_factor)
 
         for obj in objects:
-            if obj in self.colors:
-                context.set_source_rgb(*self.colors[obj])
-            else:
-                context.set_source_rgb(0,0,0)
             self.recursive_draw(obj, context, initial_factor)
 
 
     def recursive_draw(self, drawable, context, size_factor):
         new_factor = size_factor * drawable.radius
         if size_factor > self.epsilon:
-            self.draw(drawable.get_draw_params(), context, size_factor)
+            if drawable in self.colors:
+                context.set_source_rgb(*self.colors[drawable])
+                self.draw(drawable.get_draw_params(), context, size_factor)
+                context.set_source_rgb(0,0,0)
+            else:
+                self.draw(drawable.get_draw_params(), context, size_factor)
         else:
             return # this will cause issues if tiny objects have large children
             # still, something like this is necessary for infinite nesting
         context.save()
+        if drawable in self.colors:
+            context.set_source_rgb(*self.colors[drawable])
         context.translate(*self.scale(drawable.pos, size_factor))
         for child in drawable.children:
             self.recursive_draw(child, context, new_factor)

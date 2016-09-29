@@ -1,3 +1,4 @@
+import shapes
 from math import hypot, acos, atan, atan2, cos, sin, tan, pi
 RIGHT = pi/2.
 STRAIGHT = pi
@@ -7,8 +8,11 @@ FULL = 2*pi
 
 def distance_from_shape(shape, x, y):
     '''distance from a point to the shapes center'''
-    sx, sy, _, = shape.params
-    return hypot(abs(sx-x), abs(sy-y))
+    sx, sy, r, = shape.params
+    d = hypot(abs(sx-x), abs(sy-y))
+    if type(shape) == shapes.Ring:
+        return abs(r-d)
+    return d
 
 def vector(angle, length):
     ''' vector (x,y)'''
