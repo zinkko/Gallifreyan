@@ -71,8 +71,16 @@ class UI(Gtk.Window):
             self.logic.set_draw_shape(mode)
 
     def on_button_press(self, widget, event):
+
+        if event.button == 3: # right mouse btn
+            self.painter.hilight(self.logic.selected_object, None)
+            self.logic.deselect()
+            self.queue_draw()
+            return
+
         _, x, y, _ = event.window.get_pointer()
         x,y = self.map_coordinates(x,y)
+        
         if self.input_mode == 'select':
             self.painter.hilight(self.logic.selected_object, None)
             self.logic.select_shape_at(x, y)

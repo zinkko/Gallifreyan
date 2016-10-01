@@ -1,4 +1,4 @@
-from shapes import *
+from domain.shapes import *
 from library import distance_from_shape
 from math import hypot
 
@@ -13,6 +13,9 @@ class Logic(object):
 
     def clear_all(self):
         self.objects = []
+
+    def deselect(self):
+        self.selected_object = None
 
     def map_coordinates(self, x, y, parent):
         px, py, r = parent.params
@@ -52,7 +55,7 @@ class Logic(object):
 
     def create_object(self, x, y):
         xyz = {
-                'circle' : lambda x, y : Circle(x,y,0),
+                'circle' : lambda x, y : Circle(x, y, 0),
                 'polygon' : lambda x, y : Polygon(x, y, self.n, 0),
               }
         return xyz[self.next_shape](x,y)
@@ -70,6 +73,13 @@ class Logic(object):
         ox, oy, _ = self.new_object.params
         self.new_object.r = hypot(abs(ox-x), abs(oy-y))
         self.new_object.params = (ox, oy, self.new_object.r)
+
+        # TODO: clean
+        if type(self.new_object) == Polygon and self.new_object.r > 0:
+            from math import acos, pi
+            self.new_object.alpha = acos((ox-x)/self.new_object.r)
+            if y > oy:
+                self.new_object.alpha *= -1
 
     def set_draw_shape(self, data):
         self.next_shape = data

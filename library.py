@@ -1,4 +1,4 @@
-import shapes
+import domain.shapes
 from math import hypot, acos, atan, atan2, cos, sin, tan, pi
 RIGHT = pi/2.
 STRAIGHT = pi
@@ -10,7 +10,7 @@ def distance_from_shape(shape, x, y):
     '''distance from a point to the shapes center'''
     sx, sy, r, = shape.params
     d = hypot(abs(sx-x), abs(sy-y))
-    if type(shape) == shapes.Ring:
+    if type(shape) == domain.shapes.Ring:
         return abs(r-d)
     return d
 

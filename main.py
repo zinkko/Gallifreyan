@@ -1,6 +1,6 @@
 from ui.ui import UI
 from ui.cairo_painter import Painter
-from shapes import *
+from domain.shapes import *
 from logic import Logic
 
 # ui = UserInterface(some_nice_painter)
