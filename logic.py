@@ -2,6 +2,8 @@ from domain.shapes import *
 from library import distance_from_shape
 from math import hypot
 
+import text_utils
+
 class Logic(object):
 
     def __init__(self, objects = None):
@@ -62,6 +64,12 @@ class Logic(object):
 
     def set_n(self, n):
         if n > 2: self.n = n
+
+    def display_text(self, text):
+        words = text.split(' ')
+        new_objects = map(text_utils.create_word, words)
+
+        self.objects.extend(new_objects)
 
     def start_draw(self, x, y):
         self.new_object = self.create_object(x, y)

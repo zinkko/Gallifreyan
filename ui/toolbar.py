@@ -16,10 +16,14 @@ class ToolBar(Gtk.VBox):
         saveBtn = Gtk.Button("Save")
         loadBtn = Gtk.Button("Load from file")
         clearBtn = Gtk.Button("clear shapes")
+        entry = Gtk.Entry()
 
         clearBtn.connect("button-press-event", self.clear_all)
 
-        for button in [saveBtn, loadBtn, clearBtn]:
+        entry.connect("key-press-event", self.enter_text)
+        self.entry = entry # replace with better event
+
+        for button in [entry, saveBtn, loadBtn, clearBtn]:
             self.pack_start(button, expand = False, fill = True, padding = 0)
 
     def create_radio_buttons(self):
@@ -32,6 +36,12 @@ class ToolBar(Gtk.VBox):
 
     def change_shape(self, widget, data):
         self.ui.set_input_mode(data)
+
+    def enter_text(self, widget, event):
+        if event.keyval == 65293: #purkkaa!
+            txt = self.entry.get_text()
+            self.logic.display_text(txt)
+            self.ui.queue_draw()
 
     def clear_all(self, widget, event):
         self.logic.clear_all()
