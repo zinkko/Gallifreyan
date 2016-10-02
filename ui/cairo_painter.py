@@ -54,6 +54,7 @@ class Painter(Gtk.Window):
             'arc':self.draw_arc,
             'polygon':self.draw_polygon,
             'line': self.draw_line,
+            'dot': self.draw_dot,
         }
         for parameters in draw_objs:
             name, params = parameters[0], parameters[1:]
@@ -84,3 +85,8 @@ class Painter(Gtk.Window):
         context.line_to(*self.scale(end, factor))
 
         context.stroke()
+
+    def draw_dot(self, params, context, factor):
+        params = self.scale(params, factor) + (0,2*pi)
+        context.arc(*params)
+        context.fill()

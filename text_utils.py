@@ -1,5 +1,7 @@
 import library
 from domain.shapes import *
+from domain.shape_utils import *
+from random import random
 
 from math import pi
 
@@ -16,11 +18,11 @@ def inset_maker(depth, breadth):
     return f
 
 vowels = {
-    'a': circle_maker(0.05, 0.15),
-    'e': circle_maker(0.05, 0),
-    'i': circle_maker(0.05, 0),
-    'o': circle_maker(0.05, -0.15),
-    'u': circle_maker(0.05, 0),
+    'a': (circle_maker(0.05, 0.15), '.', 0),
+    'e': (circle_maker(0.05, 0), '.', 0),
+    'i': (circle_maker(0.05, 0), '-', 1),
+    'o': (circle_maker(0.05, -0.15), '.', 0),
+    'u': (circle_maker(0.05, 0), '-', -1),
 }
 
 c1 = inset_maker(2.6*pi/3, pi/14)
@@ -29,16 +31,59 @@ c3 = inset_maker(pi/3, pi/6)
 c4 = circle_maker(0.25, 0)
 
 consonants = {
-    'b': c1, 'ch': c1, 'd': c1, 'f': c1,  'g': c1, 'h': c1,
-    'j': c2, 'k' : c2, 'l': c2, 'm': c2,  'n': c2, 'p': c2,
-    't': c3, 'sh': c3, 'r': c3, 's': c3,  'v': c3, 'w': c3,
-    'th':c4, 'y' : c4, 'ng': c4, 'qu':c4, 'x': c4, 'z': c4,
+    'b': (c1, '.', 0), 'ch': (c1, '.', 2), 'd': (c1, '.', 3), 'f': (c1, '-', 3),  'g': (c1, '-', 1), 'h': (c1, '-', 2),
+    'j': (c2, '.', 0), 'k' : (c2, '.', 2), 'l': (c2, '.', 3), 'm': (c2, '-', 3),  'n': (c2, '-', 1), 'p': (c2, '-', 2),
+    't': (c3, '.', 0), 'sh': (c3, '.', 2), 'r': (c3, '.', 3), 's': (c3, '-', 3),  'v': (c3, '-', 1), 'w': (c3, '-', 2),
+    'th':(c4, '.', 0), 'y' : (c4, '.', 2), 'z': (c4, '.', 3), 'ng':(c4, '-', 3), 'qu': (c4, '-', 1), 'x': (c4, '-', 2),
+    'q': (c2, '.', 2), 'c': (c2, '.', 2), # same as 'k'
 }
+
+def parse_objects(word):
+
+    angle = 0
+    tokens = []
+    skip = False
+
+    for i, letter in enumerate(word):
+
+        if skip:
+            skip = False
+            continue
+
+        double = word[i:i+2]
+        if double in consonants:
+            creator, emb, amount = consonants[double]
+            skip = True
+        elif letter in vowels:
+            creator, emb, amount = vowels[letter]
+            if i > 0 and (word[i-1] not in vowels or word[i-2:i] == 'qu'):
+                angle -= 2 * pi / len(word)
+        else:
+            creator, emb, amount = consonants[letter]
+
+        tokens.append((creator(angle), emb, amount, angle))
+
+        angle += 2 * pi / len(word)
+
+    return tokens
 
 
 def create_word(word):
+
+    children = parse_objects(word)
+
     base = CirclePlusPlus(0, 0, 0.8)
-    for i, thing in enumerate([c1, c2, c3, c4]):
-        base.add_child(thing(i*0.4*pi + 0.1))
-        base.add_child(vowels['a'](i*0.4*pi + 0.1))
+
+    for child, emb, amount, angle in children:
+        base.add_child(child)
+        if emb == '-': # more difficult later
+            if amount == -1: # 'u'
+                base.children.append(line_to_infinity(child, angle))
+                continue
+            for i in range(amount):
+                base.children.append(line_to_parent_arc(child, angle - pi + (i-1) * pi/6))
+        elif emb == '.':
+            for i in range(amount):
+                child.children.append(Dot(random(),random()))
+
     return base

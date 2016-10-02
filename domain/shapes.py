@@ -114,6 +114,14 @@ class Line(Shape):
     def get_draw_params(self):
         return [('line',) + self.start + self.end]
 
+class Dot(Shape):
+
+    def __init__(self, x, y):
+        super(Dot, self).__init__(x, y, .1)
+
+    def get_draw_params(self):
+        return [('dot',) + self.params]
+
 class Polygon(Shape):
 
     def __init__(self, x, y, n, r, alpha=pi/2, overlap=False):

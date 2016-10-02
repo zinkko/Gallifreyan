@@ -2,6 +2,12 @@ import library
 from .shapes import *
 from math import atan2, cos, sin, hypot, sqrt, pi
 
+def line_to_infinity(child, angle):
+    x1, y1 = map(sum, zip(child.pos, library.vector(angle, child.radius)))
+    x2, y2 = x1 + cos(angle) * 3, y1 + sin(angle) * 3  # with scaling this should leave the window
+
+    return Line(x1, y1, x2, y2)
+
 def line(child1, child2):
     dy = child2.y - child1.y
     dx = child2.x - child1.x

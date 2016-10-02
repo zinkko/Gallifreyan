@@ -76,7 +76,7 @@ ring.children.append(Circle(cos(a), sin(a), 0.05))
 ring.children.append(Circle(cos(b)*l, sin(b)*l, 0.05))
 
 # circle_test
-shapes = [test_shape1, test_shape2, inset_test, ring]
+shapes = [] #test_shape1, test_shape2, inset_test, ring]
 
 painter = Painter()
 
