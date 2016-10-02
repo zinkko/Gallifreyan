@@ -1,6 +1,7 @@
 from ui.ui import UI
 from ui.cairo_painter import Painter
 from domain.shapes import *
+from domain.shape_utils import *
 from logic import Logic
 
 # ui = UserInterface(some_nice_painter)
@@ -19,8 +20,16 @@ step = pi/6
 
 test_shape1.make_inset(0, step)
 test_shape1.make_inset(4*step,5*step)
-test_shape1.add_child(Circle(0, 0.8, 0.2), True)
-test_shape1.add_child(Circle(-0.8, -0.7, 0.2),False)
+
+cc1 = Circle(0, 0.8, 0.2)
+cc2 = Circle(-0.8, -0.7, 0.2)
+
+test_shape1.add_child(cc1, True)
+test_shape1.add_child(cc2, False)
+
+test_shape1.children.append(line(cc1, cc2))
+test_shape1.children.append(line(test_shape1.children[0], cc2))
+test_shape1.children.append(line_to_parent_arc(cc1, -pi/4))
 
 circle_test = CirclePlusPlus(-0.55, 0, 0.20)
 

@@ -85,7 +85,6 @@ class Inset(Shape):
     def get_draw_params(self):
         return [('arc',) + self.params + self.angles]
 
-
 class Circle(Shape):
 
     def __init__(self, x, y, r, overlap = False):
@@ -104,6 +103,16 @@ class Ring(Shape):
 
     def get_draw_params(self):
         return [('arc',) + self.params + arc for arc in self.arcs]
+
+class Line(Shape):
+
+    def __init__(self, x1, y1, x2, y2):
+        super(Line, self).__init__(0,0,1)
+        self.start = (x1, y1)
+        self.end = (x2, y2)
+
+    def get_draw_params(self):
+        return [('line',) + self.start + self.end]
 
 class Polygon(Shape):
 

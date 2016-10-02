@@ -49,9 +49,12 @@ class Painter(Gtk.Window):
         context.restore()
 
     def draw(self, draw_objs, context, size_factor):
-        functions = {'circle':self.draw_circle,
-          'arc':self.draw_arc,
-          'polygon':self.draw_polygon}
+        functions = {
+            'circle':self.draw_circle,
+            'arc':self.draw_arc,
+            'polygon':self.draw_polygon,
+            'line': self.draw_line,
+        }
         for parameters in draw_objs:
             name, params = parameters[0], parameters[1:]
             functions[name](params, context, size_factor)
@@ -73,4 +76,11 @@ class Painter(Gtk.Window):
             context.line_to(*self.scale(points[i+1], factor))
         context.move_to(*self.scale(points[-1], factor))
         context.line_to(*self.scale(points[0], factor))
+        context.stroke()
+
+    def draw_line(self, points, context, factor):
+        start, end = points[:2], points[2:]
+        context.move_to(*self.scale(start, factor))
+        context.line_to(*self.scale(end, factor))
+
         context.stroke()
