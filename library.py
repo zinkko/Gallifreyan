@@ -72,5 +72,5 @@ def polygon_crop_angles(polygon):
 def alpha(a,b,c):
     '''find angle opposite to side "a" in a triangle with sides a,b,c'''
     a2,b2,c2 = [x*x for x in (a,b,c)]
-    cos_alpha = (a2-b2-c2)/(2*b*c)
+    cos_alpha = round((a2-b2-c2)/(2*b*c), 14) # fix a precision error
     return acos(cos_alpha)
