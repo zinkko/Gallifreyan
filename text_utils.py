@@ -67,12 +67,24 @@ def parse_objects(word):
 
     return tokens
 
+def random_point(earlier_points, r):
+    overlap = True
+    while overlap:
+        overlap = False
+        x = random() * 0.8
+        y = random() * 0.8
+        for x0, y0 in earlier_points:
+            if abs(x-x0) + abs(y-y0) < 2*r:
+                overlap = True
+                break
+    return x, y
 
-def create_word(word):
+def create_word(word, x, y, size):
+    dot_size = Dot(0,0).radius
 
     children = parse_objects(word)
 
-    base = CirclePlusPlus(0, 0, 0.8)
+    base = CirclePlusPlus(x, y, size)
 
     for child, emb, amount, angle in children:
         base.add_child(child)
@@ -83,7 +95,10 @@ def create_word(word):
             for i in range(amount):
                 base.children.append(line_to_parent_arc(child, angle - pi + (i-1) * pi/6))
         elif emb == '.':
+            earlier_points = [] # ensure point don't overlap
             for i in range(amount):
-                child.children.append(Dot(random(),random()))
+                point = random_point(earlier_points, dot_size)
+                child.children.append(Dot(*point))
+                earlier_points.append(point)
 
     return base

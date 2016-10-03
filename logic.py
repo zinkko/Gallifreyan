@@ -1,5 +1,5 @@
+import library
 from domain.shapes import *
-from library import distance_from_shape
 from math import hypot
 
 import text_utils
@@ -46,10 +46,10 @@ class Logic(object):
         if not self.objects:
             return None, None
         closest = self.objects[0]
-        distance = distance_from_shape(closest, x, y)
+        distance = library.distance_from_shape(closest, x, y)
 
         for obj in objects:
-            new_distance = distance_from_shape(obj, x, y)
+            new_distance = library.distance_from_shape(obj, x, y)
             if new_distance < distance:
                 closest = obj
                 distance = new_distance
@@ -67,7 +67,23 @@ class Logic(object):
 
     def display_text(self, text):
         words = text.split(' ')
-        new_objects = map(text_utils.create_word, words)
+
+        n = len(words)
+
+        if n == 1:
+            self.objects.append(text_utils.create_word(text, 0, 0, 0.7))
+            return
+
+        diameter = 1.3
+        size = 3*diameter/n
+        size = size / 3
+
+        get_x = lambda i : library.polygon_point_x(i, n, diameter / 2)
+        get_y = lambda i : library.polygon_point_y(i, n, diameter / 2)
+
+        data = [(word, get_x(i), get_y(i), size) for i, word in enumerate(words)]
+
+        new_objects = map(lambda args : text_utils.create_word(*args), data)
 
         self.objects.extend(new_objects)
 

@@ -23,6 +23,16 @@ def point_at(x, y, radius, angle):
     dx, dy = vector(angle, radius)
     return (x+dx, y+dy)
 
+def polygon_point_x(i, n, radius):
+    '''x coord of the ith point on an n-gon, such that the radius of the circumscribing circle is radius'''
+    angle = i * FULL / n
+    return vector(angle, radius)[0]
+
+def polygon_point_y(i, n, radius):
+    '''y coord of the ith point on an n-gon, such that the radius of the circumscribing circle is radius'''
+    angle = i * FULL / n
+    return vector(angle, radius)[1]
+
 def apollonian_circle(c1,c2,c3, solution_type = 0):
     x1, y1, r1 = c1.params
     x2, y2, r2 = c2.params
