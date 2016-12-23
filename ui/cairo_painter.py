@@ -23,6 +23,7 @@ class Painter(Gtk.Window):
         initial_factor = (height/2)/self.size
         x,y = self.pos
         context.translate(-x*initial_factor, -y*initial_factor)
+        context.rotate(-pi/2)
 
         for obj in objects:
             self.recursive_draw(obj, context, initial_factor)

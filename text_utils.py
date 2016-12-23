@@ -1,7 +1,7 @@
 import library
 from domain.shapes import *
 from domain.shape_utils import *
-from random import random
+from random import random, shuffle
 
 from math import pi
 
@@ -38,11 +38,23 @@ consonants = {
     'q': (c2, '.', 2), 'c': (c2, '.', 2), # same as 'k'
 }
 
+def length(word):
+    length = sum([1 if c in consonants else 0 for c in word])
+    # double length consonants will waste space
+    for i in range(len(word)-1):
+        if word[i] in vowels and word[i+1] in vowels:
+            length += 1
+    if word[0] in vowels:
+        length += 1
+    return length
+
 def parse_objects(word):
 
     angle = 0
     tokens = []
     skip = False
+    word_len = length(word)
+    angle_increment = 1.9 * pi / word_len
 
     for i, letter in enumerate(word):
 
@@ -57,48 +69,154 @@ def parse_objects(word):
         elif letter in vowels:
             creator, emb, amount = vowels[letter]
             if i > 0 and (word[i-1] not in vowels or word[i-2:i] == 'qu'):
-                angle -= 2 * pi / len(word)
+                angle -= angle_increment
         else:
             creator, emb, amount = consonants[letter]
 
         tokens.append((creator(angle), emb, amount, angle))
 
-        angle += 2 * pi / len(word)
+        angle += angle_increment
 
     return tokens
 
-def random_point(earlier_points, r):
+def random_point(earlier_points, r, center, radius):
     overlap = True
     while overlap:
         overlap = False
-        x = random() * 0.8
-        y = random() * 0.8
+        #x = (random() * 2 -1) * radius + center[0]
+        #y = (random() * 2 -1) * radius + center[1]
+        x, y = library.vector(random() * library.FULL, random()*radius)
+        x, y = library.vector_add((x, y), center)
         for x0, y0 in earlier_points:
             if abs(x-x0) + abs(y-y0) < 2*r:
                 overlap = True
                 break
     return x, y
 
+def equalize(groupA, groupB, sizeA, sizeB):
+    if abs(sizeA - sizeB) < 2:
+        return
+
+    if sizeA < sizeB:
+        smaller, bigger = groupA, groupB
+    else:
+        smaller, bigger = groupB, groupA
+
+    planB = None
+    swap = None
+    for amount, obj in bigger:
+        if amount == 1:
+            swap = obj
+            break
+        elif planB is None and amount == 3:
+            planB = obj
+
+    if swap is not None:
+        bigger.remove((1, swap))
+        smaller.append((1, swap))
+        return
+
+    swap = None
+    if planB is not None:
+        for amount, obj in smaller:
+            if amount == 2:
+                swap = obj
+                break
+    if swap is not None:
+        bigger.remove((3, planB))
+        smaller.append((3, planB))
+        smaller.remove((2, swap))
+        bigger.append((2, swap))
+
+def connect(parent, one, other, angles):
+    if parent.connected is None:
+        parent.connected = [(one, other), (other, one)]
+        parent.children.append(line(one, other))
+    elif (one, other) not in parent.connected:
+        parent.connected.append((one, other))
+        parent.connected.append((other, one))
+        parent.children.append(line(one, other))
+    else:
+        #TODO: get a sane angle
+        parent.children.append(line_to_parent_arc(one, angles[one]))
+        parent.children.append(line_to_parent_arc(other, angles[other]))
+        angles[one] += 0.3
+        angles[other] += 0.3
+
 def create_word(word, x, y, size):
     dot_size = Dot(0,0).radius
 
+    base = CirclePlusPlus(x, y, size)
+
     children = parse_objects(word)
 
-    base = CirclePlusPlus(x, y, size)
+    groupA = []
+    groupB = []
+
+    sizeA = 0
+    sizeB = 0
+
+    angles = {}
 
     for child, emb, amount, angle in children:
         base.add_child(child)
-        if emb == '-': # more difficult later
+        angles[child] = angle - pi
+        if emb == '-':
             if amount == -1: # 'u'
                 base.children.append(line_to_infinity(child, angle))
-                continue
-            for i in range(amount):
-                base.children.append(line_to_parent_arc(child, angle - pi + (i-1) * pi/6))
+            else:
+                if sizeA < sizeB:
+                    groupA.append((amount, child))
+                    sizeA += amount
+                else:
+                    groupB.append((amount, child))
+                    sizeB += amount
         elif emb == '.':
+            if type(child) is Inset:
+                center = library.vector(angle - pi, 0.7)
+                radius = 0.4
+            else:
+                center = (0,0)
+                radius = 0.7
             earlier_points = [] # ensure point don't overlap
             for i in range(amount):
-                point = random_point(earlier_points, dot_size)
+                point = random_point(earlier_points, dot_size, center, radius)
                 child.children.append(Dot(*point))
                 earlier_points.append(point)
+
+    equalize(groupA, groupB, sizeA, sizeB)
+
+    groupB = groupB[::-1]
+
+    while groupA:
+        amount, a = groupA.pop()
+        xyz = []
+        print(amount, a)
+        i = 0
+        while i < amount:
+            if groupB:
+                other_amount, b = groupB.pop()
+                if abs(angles[b] - angles[a]) < 0.001:
+                    xyz.append((other_amount, b))
+                    continue
+                connect(base, a, b, angles)
+                if other_amount > 1:
+                    groupB.insert(0, (other_amount-1, b))
+            else:
+                angle = angles[a]
+                if type(a) is Circle and a.radius == 0.05:
+                    angle += 0.2
+                base.children.append(line_to_parent_arc(a, angle))
+            i += 1
+        groupB.extend(xyz)
+
+    while groupB:
+        amount, b = groupB.pop()
+        for i in range(amount):
+            print('line', b)
+            angle = angles[b]
+            if type(b) is Circle and b.radius == 0.05:
+                angle += 0.2
+            base.children.append(line_to_parent_arc(b, angle))
 
     return base

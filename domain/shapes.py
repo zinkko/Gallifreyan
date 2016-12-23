@@ -19,6 +19,7 @@ class CirclePlusPlus(Shape):
     def __init__(self,x,y,r):
         super(CirclePlusPlus, self).__init__(x,y,r)
         self.arcs = [(0, 2*pi)]
+        self.connected = None
 
     def get_draw_params(self):
         return [('arc',) + self.params + x for x in self.arcs]
@@ -43,8 +44,10 @@ class CirclePlusPlus(Shape):
         begin %= 2*pi + epsilon
         end %= 2*pi + epsilon
         if (begin > end):
-            self.remove_segment(begin, 2*pi)
-            self.remove_segment(0, end)
+            if begin < 2*pi:
+                self.remove_segment(begin, 2*pi)
+            if end > 0:
+                self.remove_segment(0, end)
             return
         new_arcs = []
         for arc in self.arcs:

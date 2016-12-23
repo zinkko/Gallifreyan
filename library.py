@@ -18,6 +18,9 @@ def vector(angle, length):
     ''' vector (x,y)'''
     return (cos(angle)*length, sin(angle)*length)
 
+def vector_add(v1, v2):
+    return tuple(map(sum, zip(v1, v2)))
+
 def point_at(x, y, radius, angle):
     ''' coordinates of point on circumference of circle (x,y,r) at specified angle'''
     dx, dy = vector(angle, radius)

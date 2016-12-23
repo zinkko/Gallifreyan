@@ -40,6 +40,7 @@ class ToolBar(Gtk.VBox):
     def enter_text(self, widget, event):
         if event.keyval == 65293: #purkkaa!
             txt = self.entry.get_text()
+            #self.logic.clear_all()
             self.logic.display_text(txt)
             self.ui.queue_draw()
 
